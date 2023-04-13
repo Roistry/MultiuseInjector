@@ -163,24 +163,32 @@ void* x86PEBGetModuleHandle(const char* processName, const wchar_t* moduleName)
 	HANDLE hProcess = GetHandleProcessByName(processName, PROCESS_ALL_ACCESS);
 	DWORD pebAddress = x86GetPEB(hProcess);
 
-	PEB_LDR_DATA ldr{ 0 };
-	ReadProcessMemory(hProcess, pebAddress + 0xC, &ldr, sizeof(ldr), nullptr);
+	DWORD ldr{ 0 };
+	ReadProcessMemory(hProcess, (void*)(pebAddress + 0xC), &ldr, sizeof(ldr), nullptr);
 
-	LIST_ENTRY tail{ 0 };
-	ReadProcessMemory(hProcess, (void*)(&ldr + 0xC), &tail, sizeof(tail), nullptr);
+	DWORD tail{ 0 };
+	ReadProcessMemory(hProcess, (void*)(ldr + 0xC), &tail, sizeof(tail), nullptr);
+	tail += 0x8;
 
-	void* dllBase = nullptr;
-	LIST_ENTRY* currentModuleEntry = nullptr;
-	for (currentModuleEntry = tail.Flink; currentModuleEntry != &tail; ReadProcessMemory(hProcess, currentModuleEntry + 0x4, currentModuleEntry, sizeof(currentModuleEntry), nullptr))
+	DWORD dllBase{ 0 };
+	DWORD currentModuleEntry{ 0 };
+	DWORD BufferPtr{ 0 };
+	wchar_t Buffer[MAX_PATH]{ 0 };
+	for (ReadProcessMemory(hProcess, (void*)(tail), &currentModuleEntry, sizeof(currentModuleEntry), nullptr); currentModuleEntry != tail; ReadProcessMemory(hProcess, (void*)(currentModuleEntry), &currentModuleEntry, sizeof(currentModuleEntry), nullptr))
 	{
-		LDR_DATA_TABLE_ENTRY* currentModule = (LDR_DATA_TABLE_ENTRY*)currentModuleEntry;
-
-		if (wcscmp(moduleName, currentModule->BaseDllName.Buffer) == 0)
-			dllBase = currentModule->DllBase;
+		ReadProcessMemory(hProcess, (void*)(currentModuleEntry + 0x28), &BufferPtr, sizeof(BufferPtr), nullptr);
+		ReadProcessMemory(hProcess, (void*)(BufferPtr), &Buffer, sizeof(Buffer), nullptr);
+		if (wcscmp(moduleName, Buffer) == 0)
+		{
+			ReadProcessMemory(hProcess, (void*)(currentModuleEntry + 0x10), &dllBase, sizeof(dllBase), nullptr);
+			break;
+		}
 	}
 	CloseHandle(hProcess);
-	return dllBase;
+	return (void*)(dllBase);
 }
+
+
 
 DWORD x86NtCreateThreadEx(HANDLE hProcess, x86tRoutine* fRoutine, void* arg, DWORD& remoteAddress)
 {
@@ -414,6 +422,8 @@ DWORD x86StartRoutine(HANDLE hProcess, LaunchMethod launchMethod, x86tRoutine* f
 	}
 	return dwRet;
 }
+
+
 
 DWORD x64NtCreateThreadEx(HANDLE hProcess, x64tRoutine* fRoutine, void* arg, uintptr_t& remoteAddress)
 {
@@ -702,41 +712,21 @@ DWORD Inject(const char* processName, const char* dllPath, LaunchMethod launchMe
 		return 0;
 	}
 
-#if 0
-	struct GetModuleHandleExAArgs
-	{
-		DWORD dwFlags;
-		LPCSTR lpModuleName;
-		HMODULE* phModule;
-	};
-
-	HMODULE hModuleKernel32 = nullptr;
-
-	GetModuleHandleExAArgs args;
-	args.dwFlags = 0;
-	args.lpModuleName = "kernel32.dll";
-	args.phModule = &hModuleKernel32;
-
-	void* argsAddress = VirtualAllocEx(hProcess, nullptr, sizeof(GetModuleHandleExAArgs), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-
-	WriteProcessMemory(hProcess, argsAddress, &args, sizeof(args), nullptr);
-
-	HANDLE hThread = CreateRemoteThread(hProcess, nullptr, 0, (LPTHREAD_START_ROUTINE)GetModuleHandleExA, argsAddress, 0, nullptr);
-#endif
-
-	HMODULE hModuleKernel32 = (HMODULE)x86PEBGetModuleHandle(processName, L"KERNEL32.DLL");
-	if (!hModuleKernel32)
-	{
-		VirtualFreeEx(hProcess, allocationAddress, 0, MEM_RELEASE);
-		MessageBoxA(0, "Couldnt get kernel32.dll address", "ShellCode Injection", MB_OK);
-		return 0;
-	}
+	HMODULE hModuleKernel32;
 
 	if (architecture == x86Process)
 	{
+		hModuleKernel32 = (HMODULE)x86PEBGetModuleHandle(processName, L"KERNEL32.DLL");
+		if (!hModuleKernel32)
+		{
+			VirtualFreeEx(hProcess, allocationAddress, 0, MEM_RELEASE);
+			MessageBoxA(0, "Couldnt get kernel32.dll address", "ShellCode Injection", MB_OK);
+			return 0;
+		}
+
 		x86tRoutine* fRoutine = nullptr;
 
-		fRoutine = (x86tRoutine*)GetProcAddress(hModuleKernel32, "LoadLibraryA");
+		fRoutine = (x86tRoutine*)((DWORD)hModuleKernel32 + 0x30A30);
 		if (!fRoutine)
 		{
 			VirtualFreeEx(hProcess, allocationAddress, 0, MEM_RELEASE);
@@ -755,6 +745,14 @@ DWORD Inject(const char* processName, const char* dllPath, LaunchMethod launchMe
 	}
 	else if (architecture == x64Process)
 	{
+		hModuleKernel32 = (HMODULE)x64PEBGetModuleHandle(processName, L"KERNEL32.DLL");
+		if (!hModuleKernel32)
+		{
+			VirtualFreeEx(hProcess, allocationAddress, 0, MEM_RELEASE);
+			MessageBoxA(0, "Couldnt get kernel32.dll address", "ShellCode Injection", MB_OK);
+			return 0;
+		}
+
 		x64tRoutine* fRoutine = nullptr;
 
 		fRoutine = (x64tRoutine*)GetProcAddress(hModuleKernel32, "LoadLibraryA");

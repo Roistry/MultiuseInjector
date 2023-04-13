@@ -40,6 +40,24 @@ namespace menu
 
     int selectedCategory = 0;
 
+    //ProcessList
+    bool bSaveProcessList;
+    bool bSearch;
+    bool bFilters;
+    bool bSorts;
+    bool bAutoRefresh;
+
+    //Inject
+    bool bSaveInject;
+    bool bProcess;
+    bool bPID;
+    bool bDllPath;
+    bool bInjectionMethod;
+    bool bLaunchMethod;
+
+    //GameList
+    bool bSaveGameList;
+
     //int selectedGenre = 0;
     //const char* gameGenres[] = { "Genre: ALL", "Genre: ONLINE", "Genre: MMO", "Genre: SINGLE PLAYER"};
     //bool bGameGenresSelectTab = false;
@@ -77,19 +95,22 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
     GameManager gameManager;
 
     Console console;
-    console.AddCommand(new Clear{});
-    console.AddCommand(new Exit{});
+    Clear* clear = new Clear{};
+    console.AddCommand(clear);
+    Exit* exit = new Exit{};
+    console.AddCommand(exit);
     AddGame* addGame = new AddGame(&gameManager);
     console.AddCommand(addGame);
 
     PatchNotesDateManager patchNotesDateManager;
     patchNotesDateManager.vecPatchNotesDates.push_back(PatchNotesDate{ "3/28/2023", "https://cdn.discordapp.com/attachments/765166083401187338/1090396595499044944/3-28-2023_Cheat_loader.exe", "1. Process list showing all processes\nthat has a box to search processes,\na checkbox to auto refresh/not to and a\nbutton that if you dont want to auto\nrefresh you can manually do it.\n\n2. Inject tab showing different\ninjection types, box to type process\nname and if valid shows pid and\narchitecture box for dll path and a box\nto fill whats explained next.\n\n3. Game List tab where you you have\npresets of games and then auto fill\nfield in inject depends on what game\nyou selected.\n\n4. Finally an about tab showing basic\nstuff about me and a small patch notes\ntab I will change later.\n\n" });
     patchNotesDateManager.vecPatchNotesDates.push_back(PatchNotesDate{ "3/29/2023", "https://cdn.discordapp.com/attachments/765166083401187338/1090747709461364826/3-29-2023_Cheat_loader.exe", "1. Added this thing where you can\ndownload previous versions of the\nloader with a selectable date and a\ndownload button.\n\n2. Added command called AddGame where\nyou can add games to the game list with\na popup where you input information\nabout the game, you can leave it blank\nand it will fill as None.\n\n3. Finally added inject button in the\ninject tab to inject to whatever\nprocess by specifying a process/pid and\na dll path, currently only LoadLibraryA\ninject method works and in the launch\nmethods only NtCreateThreadEx and\nHijackThread works.\n\n" });
-    patchNotesDateManager.vecPatchNotesDates.push_back(PatchNotesDate{ "3/30/2023", " ", "1. Removed default games in game list tab\n\n2. Removed Del key intentially closing the loader.\n\n3. Program wont crash if there is 0 games in game list tab, did the same in game list tab.\n\n4. Didnt realise last build that the injecting will only work on x64 although i made some progress towards it.\n\n5. If you left Game Engine in AddGame blank it will stay blank so i fixed it to be like the others and it will be None instead.\n\n6. " });
+    patchNotesDateManager.vecPatchNotesDates.push_back(PatchNotesDate{ "4/13/2023", " ", "1. Removed default games in game list tab\n\n2. Removed Del key intentially closing the loader.\n\n3. Program wont crash if there is 0 games in game list tab, did the same in game list tab.\n\n4. Didnt realise last build that the injecting will only work on x64 so i made if x64 and x86 compatible.\n\n5. If you left Game Engine in AddGame blank it will stay blank so i fixed it to be like the others and it will be None instead.\n\n6. " });
 
     ImGuiIO& io = ImGui::GetIO();
     ImGuiStyle& style = ImGui::GetStyle();
 
+    io.IniFilename = 0;
     ImFont* fontConsola = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Consola.ttf", 16.0f);
     ImFont* fontConsolaSmall = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Consola.ttf", 12.0f);
 
@@ -475,7 +496,43 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
                 //Settings
                 if (menu::selectedCategory == 4)
                 {
-
+                    ImGui::Checkbox("Save ProcessList", &menu::bSaveProcessList);
+                    if (menu::bSaveProcessList)
+                    {
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("Search", &menu::bSearch);
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("Filters", &menu::bFilters);
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("Sorts", &menu::bSorts);
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("Sorts", &menu::bAutoRefresh);
+                    }
+                    ImGui::Checkbox("Save Inject", &menu::bSaveInject);
+                    if (menu::bSaveInject)
+                    {
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("Process", &menu::bProcess);
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("PID", &menu::bPID);
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("DllPath", &menu::bDllPath);
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("InjectionMethod", &menu::bInjectionMethod);
+                        ImGui::Text("   ");
+                        ImGui::SameLine();
+                        ImGui::Checkbox("LaunchMethod", &menu::bLaunchMethod);
+                    }
+                    ImGui::Checkbox("Save GameList", &menu::bSaveGameList);
+                    ImGui::NewLine();
                 }
                 ImGui::EndChild();
             }
