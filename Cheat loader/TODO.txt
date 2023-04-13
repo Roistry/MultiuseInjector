@@ -1,0 +1,15 @@
+implement inject button and have multiple injection methods
+
+make a nice menu with different colors and smooth
+
+make borderless/undecorated without x button or minimize button
+
+make selectable list not show the selected item in the list
+
+make about with links and make them clickable or atleast copyable
+
+newStr1 not getting deleted causing a small memory leak in download inside PatchNotesDate.cpp
+
+Make that typing Game in console brings up all commands like edit, add, clear etc like when you type git in cmd
+
+print to console when downloading prevoius version
