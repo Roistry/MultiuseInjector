@@ -4,13 +4,13 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
-#include "Cheat Loader/UndocumentedFunctions/NtCreateThreadEx.h"
-#include "Cheat Loader/UndocumentedFunctions/NtQueryInformationProcess.h"
+#include "Undocumented/UndocumentedFunctions/NtCreateThreadEx.h"
+#include "Undocumented/UndocumentedFunctions/NtQueryInformationProcess.h"
 
-#include "Cheat Loader/UndocumentedStructs/PEB.h"
-#include "Cheat Loader/UndocumentedStructs/PROCESS_BASIC_INFORMATION.h"
-#include "Cheat Loader/UndocumentedStructs/PROCESSINFOCLASS.h"
-#include "Cheat Loader/UndocumentedStructs/LDR_DATA_TABLE_ENTRY.h"
+#include "Undocumented/UndocumentedStructs/PEB.h"
+#include "Undocumented/UndocumentedStructs/PROCESS_BASIC_INFORMATION.h"
+#include "Undocumented/UndocumentedStructs/PROCESSINFOCLASS.h"
+#include "Undocumented/UndocumentedStructs/LDR_DATA_TABLE_ENTRY.h"
 
 #define x86Process 1
 #define x64Process 2

@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "ImGui/imgui.h"
-#include "Cheat Loader/CommandBase/CommandBase.h"
+#include "Cheat Loader/Console/CommandBase/CommandBase.h"
 
 class Console
 {

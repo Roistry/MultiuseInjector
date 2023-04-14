@@ -1,0 +1,41 @@
+{
+  "ProcessList": {
+    "Search": {
+      "Save": false,
+      "Info": ""
+    },
+    "Filters": {
+      "Save": false
+    },
+    "Sorts": {
+      "Save": false
+    },
+    "AutoRefresh": {
+      "Save": false,
+      "Info": false
+    }
+  },
+  "Inject": {
+    "ProcessName": {
+      "Save": false,
+      "Info": ""
+    },
+    "DllPath": {
+      "Save": false,
+      "Info": ""
+    },
+    "InjectionMethod": {
+      "Save": false,
+      "Info": 0
+    },
+    "LaunchMethod": {
+      "Save": false,
+      "Info": 0
+    }
+  },
+  "GameList": {
+    "Games": {
+      "Save": false
+    }
+  }
+}
