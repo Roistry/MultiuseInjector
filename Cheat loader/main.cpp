@@ -7,15 +7,16 @@
 #include <TlHelp32.h>
 
 #include "Window/ImGuiD3d9Window/ImGuiD3d9Window.h"
-#include "Cheat Loader/GameManager/GameManager.h"
+#include "Cheat Loader/Game/GameManager/GameManager.h"
 #include "Cheat Loader/Console/Console.h"
-#include "Cheat Loader/Commands/Clear/Clear.h"
-#include "Cheat Loader/Commands/Exit/Exit.h"
+#include "Cheat Loader/Console/Commands/Clear/Clear.h"
+#include "Cheat Loader/Console/Commands/Exit/Exit.h"
 #include "Cheat Loader/InjectorUtils/InjectorUtils.h"
 #include "ImGui/imimgui.h"
 #include "Cheat Loader/PatchNotesDate/PatchNotesDate.h"
-#include "Cheat Loader/PatchNotesDateManager/PatchNotesDateManager.h"
-#include "Cheat Loader/Commands/AddGame/AddGame.h"
+#include "Cheat Loader/PatchNotesDate/PatchNotesDateManager/PatchNotesDateManager.h"
+#include "Cheat Loader/Console/Commands/AddGame/AddGame.h"
+#include "Cheat Loader/Config/Config.h"
 
 bool shouldExit = false;
 
@@ -41,22 +42,19 @@ namespace menu
     int selectedCategory = 0;
 
     //ProcessList
-    bool bSaveProcessList;
     bool bSearch;
     bool bFilters;
     bool bSorts;
     bool bAutoRefresh;
 
     //Inject
-    bool bSaveInject;
-    bool bProcess;
-    bool bPID;
+    bool bProcessName;
     bool bDllPath;
     bool bInjectionMethod;
     bool bLaunchMethod;
 
     //GameList
-    bool bSaveGameList;
+    bool bGames;
 
     //int selectedGenre = 0;
     //const char* gameGenres[] = { "Genre: ALL", "Genre: ONLINE", "Genre: MMO", "Genre: SINGLE PLAYER"};
@@ -105,7 +103,7 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
     PatchNotesDateManager patchNotesDateManager;
     patchNotesDateManager.vecPatchNotesDates.push_back(PatchNotesDate{ "3/28/2023", "https://cdn.discordapp.com/attachments/765166083401187338/1090396595499044944/3-28-2023_Cheat_loader.exe", "1. Process list showing all processes\nthat has a box to search processes,\na checkbox to auto refresh/not to and a\nbutton that if you dont want to auto\nrefresh you can manually do it.\n\n2. Inject tab showing different\ninjection types, box to type process\nname and if valid shows pid and\narchitecture box for dll path and a box\nto fill whats explained next.\n\n3. Game List tab where you you have\npresets of games and then auto fill\nfield in inject depends on what game\nyou selected.\n\n4. Finally an about tab showing basic\nstuff about me and a small patch notes\ntab I will change later.\n\n" });
     patchNotesDateManager.vecPatchNotesDates.push_back(PatchNotesDate{ "3/29/2023", "https://cdn.discordapp.com/attachments/765166083401187338/1090747709461364826/3-29-2023_Cheat_loader.exe", "1. Added this thing where you can\ndownload previous versions of the\nloader with a selectable date and a\ndownload button.\n\n2. Added command called AddGame where\nyou can add games to the game list with\na popup where you input information\nabout the game, you can leave it blank\nand it will fill as None.\n\n3. Finally added inject button in the\ninject tab to inject to whatever\nprocess by specifying a process/pid and\na dll path, currently only LoadLibraryA\ninject method works and in the launch\nmethods only NtCreateThreadEx and\nHijackThread works.\n\n" });
-    patchNotesDateManager.vecPatchNotesDates.push_back(PatchNotesDate{ "4/13/2023", " ", "1. Removed default games in game list tab\n\n2. Removed Del key intentially closing the loader.\n\n3. Program wont crash if there is 0 games in game list tab, did the same in game list tab.\n\n4. Didnt realise last build that the injecting will only work on x64 so i made if x64 and x86 compatible.\n\n5. If you left Game Engine in AddGame blank it will stay blank so i fixed it to be like the others and it will be None instead.\n\n6. " });
+    patchNotesDateManager.vecPatchNotesDates.push_back(PatchNotesDate{ "4/13/2023", " ", "1. Removed default games in game list tab\n\n2. Removed Del key intentially closing the loader.\n\n3. Program wont crash if there is 0 games in game list tab, did the same in game list tab.\n\n4. Didnt realise last build that the injecting will only work on x64 so i made if x64 and x86 compatible.\n\n5. If you left Game Engine in AddGame blank it will stay blank so i fixed it to be like the others and it will be None instead.\n\n6. Added a config system that you can controll in the Settings tab, there you can choose what to load upon opening the injector.\n\n" });
 
     ImGuiIO& io = ImGui::GetIO();
     ImGuiStyle& style = ImGui::GetStyle();
@@ -114,7 +112,41 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
     ImFont* fontConsola = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Consola.ttf", 16.0f);
     ImFont* fontConsolaSmall = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Consola.ttf", 12.0f);
 
-    while (true)
+    bool autoRefresh = false;
+    char searchFilter[MAX_PATH]{ 0 };
+
+    char process[MAX_PATH] = { 0 };
+    char dllpath[MAX_PATH] = { 0 };
+    int pid = 0;
+    int architecture = 0;
+    int injectMethodsSelected = 0;
+    int launchMethodsSelected = 0;
+
+    ConfigParams configParams{ 0 };
+    {
+        configParams.m_bSaveSearch = &menu::bSearch;
+        configParams.m_bSaveFilters = &menu::bFilters;
+        configParams.m_bSaveSorts = &menu::bSorts;
+        configParams.m_bSaveAutoRefresh = &menu::bAutoRefresh;
+
+        configParams.m_bSaveProcessName = &menu::bProcessName;
+        configParams.m_bSaveDllPath = &menu::bDllPath;
+        configParams.m_bSaveInjectionMethod = &menu::bInjectionMethod;
+        configParams.m_bSaveLaunchMethod = &menu::bLaunchMethod;
+
+        configParams.m_bSaveGames = &menu::bGames;
+
+        configParams.m_bAutoRefresh = &autoRefresh;
+        configParams.m_strSearch = searchFilter;
+
+        configParams.m_strProcessName = process;
+        configParams.m_strDllPath = dllpath;
+        configParams.m_iInjectionMethod = &injectMethodsSelected;
+        configParams.m_iLaunchMethod = &launchMethodsSelected;
+    }
+    Config config{ &configParams };
+    config.LoadConfig();
+    while (!shouldExit)
     {
         ImGui_ImplWin32_NewFrame();
         ImGui_ImplDX9_NewFrame();
@@ -217,7 +249,6 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
                     static std::vector<std::pair<char*, DWORD>> processes;
 
                     ImGui::SetCursorPos(ImVec2{ 120 * 4, 0 });
-                    static bool autoRefresh = false;
                     ImGui::PushID(0);
                     ImGui::Checkbox(" ", &autoRefresh);
                     ImGui::PopID();
@@ -279,9 +310,11 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
                         CloseHandle(hSnapshot);
                     }
 
-                    static char searchFilter[MAX_PATH]{ 0 };
                     ImGui::SetCursorPos(ImVec2{ 0, 0 });
-                    ImGui::InputText(" ", searchFilter, MAX_PATH, ImVec2{ 120 * 2, 0 });
+                    if (ImGui::InputText(" ", searchFilter, MAX_PATH, ImVec2{ 120 * 2, 0 }))
+                    {
+                        
+                    }
 
                     ImGui::SetCursorPos(ImVec2{ 120 * 2, 0 });
                     ImGui::Text("Filters");
@@ -325,16 +358,13 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
                 //Inject
                 if (menu::selectedCategory == 1)
                 {
-                    static char process[MAX_PATH] = { 0 };
-                    static char dllpath[MAX_PATH] = { 0 };
-
-                    static int pid = 0;
-                    static int architecture = 0;
-
                     ImGui::Text("Process:");
                     ImGui::SetCursorPos(ImVec2(120, 0));
                     ImGui::PushID(0);
-                    ImGui::InputText(" ", process, MAX_PATH);
+                    if (ImGui::InputText(" ", process, MAX_PATH))
+                    {
+                        
+                    }
                     ImGui::PopID();
                     pid = GetPID(process);
 
@@ -365,18 +395,21 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
                     ImGui::Text("Dll Path:");
                     ImGui::SetCursorPos(ImVec2(120, 60));
                     ImGui::PushID(2);
-                    ImGui::InputText(" ", dllpath, MAX_PATH);
+                    if (ImGui::InputText(" ", dllpath, MAX_PATH))
+                    {
+                        memcpy(configParams.m_strDllPath, dllpath, strlen(dllpath));
+                    }
                     ImGui::PopID();
 
                     static const char* injectMethods[] = { "LoadLibrayA", "ManualMap" };
-                    static int injectMethodsSelected = 0;
                     static bool injectMethodsListOpen = false;
                     ImGui::SelectablesList(injectMethods, 2, ImVec2{ 0, 80 }, ImVec2{ 200, 15 }, &injectMethodsSelected, &injectMethodsListOpen);
+                    configParams.m_iInjectionMethod = &injectMethodsSelected;
 
                     static const char* launchMethods[] = { "NtCreateThreadEx", "Thread Hijacking", "SetWindowHookEx", "QueueUserAPC" };
-                    static int launchMethodsSelected = 0;
                     static bool launchMethodsListOpen = false;
                     ImGui::SelectablesList(launchMethods, 4, ImVec2{ 240, 80 }, ImVec2{ 200, 15 }, &launchMethodsSelected, &launchMethodsListOpen);
+                    configParams.m_iLaunchMethod = &launchMethodsSelected;
 
                     if (!injectMethodsListOpen && !launchMethodsListOpen)
                     {
@@ -496,43 +529,52 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
                 //Settings
                 if (menu::selectedCategory == 4)
                 {
-                    ImGui::Checkbox("Save ProcessList", &menu::bSaveProcessList);
-                    if (menu::bSaveProcessList)
+                    if (ImGui::CollapsingHeader("Load"))
                     {
                         ImGui::Text("   ");
                         ImGui::SameLine();
-                        ImGui::Checkbox("Search", &menu::bSearch);
+                        if (ImGui::CollapsingHeader("ProcessList"))
+                        {
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("Search", &menu::bSearch);
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("Filters", &menu::bFilters);
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("Sorts", &menu::bSorts);
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("AutoRefresh", &menu::bAutoRefresh);
+                        }
                         ImGui::Text("   ");
                         ImGui::SameLine();
-                        ImGui::Checkbox("Filters", &menu::bFilters);
+                        if (ImGui::CollapsingHeader("Inject"))
+                        {
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("ProcessName", &menu::bProcessName);
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("DllPath", &menu::bDllPath);
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("InjectionMethod", &menu::bInjectionMethod);
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("LaunchMethod", &menu::bLaunchMethod);
+                        }
                         ImGui::Text("   ");
                         ImGui::SameLine();
-                        ImGui::Checkbox("Sorts", &menu::bSorts);
-                        ImGui::Text("   ");
-                        ImGui::SameLine();
-                        ImGui::Checkbox("Sorts", &menu::bAutoRefresh);
+                        if (ImGui::CollapsingHeader("GameList"))
+                        {
+                            ImGui::Text("   ");
+                            ImGui::SameLine();
+                            ImGui::Checkbox("Games (Not working yet)", &menu::bGames);
+                        }
+                        ImGui::NewLine();
                     }
-                    ImGui::Checkbox("Save Inject", &menu::bSaveInject);
-                    if (menu::bSaveInject)
-                    {
-                        ImGui::Text("   ");
-                        ImGui::SameLine();
-                        ImGui::Checkbox("Process", &menu::bProcess);
-                        ImGui::Text("   ");
-                        ImGui::SameLine();
-                        ImGui::Checkbox("PID", &menu::bPID);
-                        ImGui::Text("   ");
-                        ImGui::SameLine();
-                        ImGui::Checkbox("DllPath", &menu::bDllPath);
-                        ImGui::Text("   ");
-                        ImGui::SameLine();
-                        ImGui::Checkbox("InjectionMethod", &menu::bInjectionMethod);
-                        ImGui::Text("   ");
-                        ImGui::SameLine();
-                        ImGui::Checkbox("LaunchMethod", &menu::bLaunchMethod);
-                    }
-                    ImGui::Checkbox("Save GameList", &menu::bSaveGameList);
-                    ImGui::NewLine();
                 }
                 ImGui::EndChild();
             }
@@ -729,7 +771,7 @@ DWORD Window(ImGuiD3d9Window* mainWindow)
 
         mainWindow->d3d9device->Present(NULL, NULL, NULL, NULL);
     }
-
+    config.SaveConfig();
     ExitThread(0);
 }
 
@@ -761,6 +803,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     }
 
     HANDLE hWindowThread = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Window, &mainWindow, 0, nullptr);
+    if (!hWindowThread)
+    {
+        MessageBoxW(NULL, L"Couldnt Create Thread", L"Cheat Manager", MB_OK);
+        return 0;
+    }
 
     MSG msg;
     while (!shouldExit)
@@ -770,7 +817,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         DispatchMessageW(&msg);
     }
 
-    TerminateThread(hWindowThread, 0);
+    WaitForSingleObject(hWindowThread, INFINITE);
+    CloseHandle(hWindowThread);
 
     mainWindow.ShutDownImGui();
 

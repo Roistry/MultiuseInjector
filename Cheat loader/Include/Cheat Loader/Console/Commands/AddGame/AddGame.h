@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Cheat Loader/CommandBase/CommandBase.h"
-#include "Cheat Loader/GameManager/GameManager.h"
+#include "Cheat Loader/Console/CommandBase/CommandBase.h"
+#include "Cheat Loader/Game/GameManager/GameManager.h"
 #include "Cheat Loader/Console/Console.h"
 
 class AddGame : public CommandBase

@@ -42,7 +42,7 @@
     <ClCompile Include="Include\Cheat Loader\Game\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Cheat Loader\GameManager\GameManager.cpp">
+    <ClCompile Include="Include\Cheat Loader\Game\GameManager\GameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Include\Window\Window\Window.cpp">
@@ -57,13 +57,13 @@
     <ClCompile Include="Include\Cheat Loader\Console\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Cheat Loader\CommandBase\CommandBase.cpp">
+    <ClCompile Include="Include\Cheat Loader\Console\CommandBase\CommandBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Cheat Loader\Commands\Clear\Clear.cpp">
+    <ClCompile Include="Include\Cheat Loader\Console\Commands\Clear\Clear.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Cheat Loader\Commands\Exit\Exit.cpp">
+    <ClCompile Include="Include\Cheat Loader\Console\Commands\Exit\Exit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Include\Cheat Loader\InjectorUtils\InjectorUtils.cpp">
@@ -72,13 +72,16 @@
     <ClCompile Include="Include\Cheat Loader\PatchNotesDate\PatchNotesDate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Cheat Loader\PatchNotesDateManager\PatchNotesDateManager.cpp">
+    <ClCompile Include="Include\Cheat Loader\PatchNotesDate\PatchNotesDateManager\PatchNotesDateManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Include\ImGui\imimgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Cheat Loader\Commands\AddGame\AddGame.cpp">
+    <ClCompile Include="Include\Cheat Loader\Console\Commands\AddGame\AddGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Cheat Loader\Config\Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -110,7 +113,7 @@
     <ClInclude Include="Include\Cheat Loader\Game\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\GameManager\GameManager.h">
+    <ClInclude Include="Include\Cheat Loader\Game\GameManager\GameManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Window\Window\Window.h">
@@ -125,13 +128,13 @@
     <ClInclude Include="Include\Cheat Loader\Console\Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\CommandBase\CommandBase.h">
+    <ClInclude Include="Include\Cheat Loader\Console\CommandBase\CommandBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\Commands\Clear\Clear.h">
+    <ClInclude Include="Include\Cheat Loader\Console\Commands\Clear\Clear.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\Commands\Exit\Exit.h">
+    <ClInclude Include="Include\Cheat Loader\Console\Commands\Exit\Exit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Cheat Loader\InjectorUtils\InjectorUtils.h">
@@ -140,82 +143,88 @@
     <ClInclude Include="Include\Cheat Loader\PatchNotesDate\PatchNotesDate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\PatchNotesDateManager\PatchNotesDateManager.h">
+    <ClInclude Include="Include\Cheat Loader\PatchNotesDate\PatchNotesDateManager\PatchNotesDateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\ImGui\imimgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\Commands\AddGame\AddGame.h">
+    <ClInclude Include="Include\Cheat Loader\Console\Commands\AddGame\AddGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedFunctions\NtCreateThreadEx.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedFunctions\NtCreateThreadEx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedFunctions\NtQueryInformationProcess.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedFunctions\NtQueryInformationProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedFunctions\PUSER_THREAD_START_ROUTINE.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedFunctions\PUSER_THREAD_START_ROUTINE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\CURDIR.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\CURDIR.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\GDI_HANDLE_BUFFER.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\GDI_HANDLE_BUFFER.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\KPRIORITY.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\KPRIORITY.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\LDR_DATA_TABLE_ENTRY.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\LDR_DATA_TABLE_ENTRY.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\LDR_DDAG_NODE.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\LDR_DDAG_NODE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\LDR_DDAG_STATE.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\LDR_DDAG_STATE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\LDR_DLL_LOAD_REASON.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\LDR_DLL_LOAD_REASON.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\LDR_SERVICE_TAG_RECORD.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\LDR_SERVICE_TAG_RECORD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\LDRP_CSLIST.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\LDRP_CSLIST.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\OBJECT_ATTRIBUTES.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\OBJECT_ATTRIBUTES.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\PEB.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\PEB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\PEB_LDR_DATA.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\PEB_LDR_DATA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\PROCESS_BASIC_INFORMATION.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\PROCESS_BASIC_INFORMATION.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\PROCESSINFOCLASS.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\PROCESSINFOCLASS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\PS_ATTRIBUTE.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\PS_ATTRIBUTE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\PS_ATTRIBUTE_LIST.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\PS_ATTRIBUTE_LIST.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\RTL_BALANCED_NODE.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\RTL_BALANCED_NODE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\RTL_DRIVE_LETTER_CURDIR.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\RTL_DRIVE_LETTER_CURDIR.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\RTL_USER_PROCESS_PARAMETERS.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\RTL_USER_PROCESS_PARAMETERS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Cheat Loader\UndocumentedStructs\UNICODE_STRING.h">
+    <ClInclude Include="Include\Undocumented\UndocumentedStructs\UNICODE_STRING.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Json\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Cheat Loader\Config\Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
