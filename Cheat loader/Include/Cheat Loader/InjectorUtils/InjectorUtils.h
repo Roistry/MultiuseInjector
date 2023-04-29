@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <vector>
 
 #include <Windows.h>
 #include <TlHelp32.h>
@@ -33,6 +34,20 @@ enum LaunchMethod
 	QUEUEUSERAPC
 };
 
+struct HookData
+{
+	HHOOK m_hHook;
+	HWND m_hWnd;
+};
+
+struct EnumWindowsCallbackData
+{
+	std::vector<HookData> m_vecHookData;
+	DWORD m_dwPID;
+	HOOKPROC m_oHook;
+	HMODULE m_hModule;
+};
+
 static tNtQueryInformationProcess oNtQueryInformationProcess = 0;
 
 static tNtCreateThreadEx oNtCreateThreadEx = 0;
@@ -59,7 +74,11 @@ HANDLE GetHandleProcessByName(const char* processName, DWORD dwDesiredAccess);
 
 void* x64PEBGetModuleHandle(const char* processName, const wchar_t* moduleName);
 
+void* x64PEBGetModuleHandle(HANDLE hProcess, const wchar_t* moduleName);
+
 void* x86PEBGetModuleHandle(const char* processName, const wchar_t* moduleName);
+
+void* x86PEBGetModuleHandle(HANDLE hProcess, const wchar_t* moduleName);
 
 DWORD x86NtCreateThreadEx(HANDLE hProcess, x86tRoutine* fRoutine, void* arg, DWORD& remoteAddress);
 
