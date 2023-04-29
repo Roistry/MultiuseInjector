@@ -17,20 +17,20 @@
   },
   "Inject": {
     "ProcessName": {
-      "Save": true,
-      "Info": "Spotify.exe"
+      "Save": false,
+      "Info": ""
     },
     "DllPath": {
-      "Save": true,
-      "Info": "C:\\Users\\Admin\\Desktop\\Cheat loader related\\x86.dll"
+      "Save": false,
+      "Info": ""
     },
     "InjectionMethod": {
-      "Save": true,
+      "Save": false,
       "Info": 0
     },
     "LaunchMethod": {
-      "Save": true,
-      "Info": 3
+      "Save": false,
+      "Info": 0
     }
   },
   "GameList": {
